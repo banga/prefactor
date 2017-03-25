@@ -1,0 +1,52 @@
+* {
+    box-sizing: border-box;
+}
+.container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    padding: 10px;
+    font-family: monospace;
+}
+.column {
+    height: 100%;
+    width: 50%;
+    overflow: auto;
+}
+#source {
+    height: 100%;
+    width: 100%;
+    font-family: monospace;
+}
+#output {
+    margin-left: 10px;
+    border: 1px solid #333;
+}
+.node {
+    padding: 1px;
+    padding-left: 10px;
+}
+.node.highlight {
+    background: #eee;
+    border: 1px solid #ccc;
+    padding: 0;
+    padding-left: 9px;
+}
+.node > .terminal {
+    color: #666;
+}
+.node > .non_terminal {
+    font-weight: bold;
+    color: green;
+}
+.node > .value {
+    color: maroon;
+    padding-left: 5px;
+}
+.node > .prefix {
+    color: maroon;
+    padding-left: 15px;
+}

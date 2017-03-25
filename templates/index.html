@@ -1,119 +1,34 @@
 <!doctype html>
-<html lang="">
+<html>
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title></title>
-        <style type="text/css">
-        #output {
-            font-family: monospace;
-        }
-        .node {
-            padding: 1px;
-            padding-left: 10px;
-        }
-        .node.highlight {
-            background: #eee;
-            border: 1px solid #ccc;
-            padding: 0;
-            padding-left: 9px;
-        }
-        .type {
-            color: green;
-        }
-        .value {
-            colore: maroon;
-        }
-        </style>
+        <title>Parser Playground</title>
+        <link rel="stylesheet" href="static/style.css"/>
     </head>
     <body>
-        <div id="container">
-            <div id="column1">
+        <div class="container">
+            <div class="column">
                 <textarea id="source" cols="100" rows="10">
-import sys
+from lib2to3.pytree import type_repr
 
-def main():
-    print("Hello World!")
+
+def to_json(node):
+    json = {
+        "type": type_repr(node.type),
+        "prefix": node.prefix,
+        "lineno": node.get_lineno(),
+    }
+    if hasattr(node, "value"):
+        json["value"] = node.value
+    if node.children:
+        json["children"] = list(map(to_json, node.children))
+    return json
                 </textarea>
             </div>
-            <div id="column2">
-                <div id="output">
-                </div>
+            <div class="column" id="output">
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
     </body>
-    <script>
-        const $source = $("#source");
-        const $output = $("#output");
-
-        function renderNode(node) {
-            const div = $("<div>")
-                .addClass("node")
-                .addClass(node.type)
-                .attr("data-lineno", node.lineno);
-
-            if (node.value) {
-                div.append($("<span>")
-                    .addClass("value")
-                    .text('"' + node.value + '"'));
-            }
-            if (node.type) {
-                div.append($("<span>")
-                    .addClass("type")
-                    .text(node.type));
-            }
-            if (node.prefix) {
-                div.append($("<span>")
-                    .addClass("prefix")
-                    .text(node.prefix));
-            }
-            if (node.children) {
-                const children = $("<div>")
-                    .addClass("children");
-                node.children.forEach(function(child) {
-                    children.append(renderNode(child));
-                });
-                div.append(children);
-            }
-            return div;
-        }
-
-        function highlightLineNodes(lineno) {
-            $(".node").removeClass("highlight");
-            if (lineno) {
-                $(`.node[data-lineno="${lineno}"`).addClass("highlight");
-                $(".node.highlight .highlight").removeClass("highlight");
-            }
-        }
-
-        function updateHighlightedLineNodes() {
-            const lineno = $source.val().substr(
-                0, $source.get(0).selectionStart).split("\n").length;
-            highlightLineNodes(lineno);
-        }
-
-        var lastRequest;
-        function updateOutput() {
-            if (lastRequest) {
-                lastRequest.abort();
-            }
-            lastRequest = $.ajax({
-                type: "POST",
-                url: "/parse",
-                data: {source: $source.val()},
-                success: function(data) {
-                    console.log(data.tree);
-                    $output.html("").append(renderNode(data.tree));
-                    updateHighlightedLineNodes();
-                },
-                dataType: "json"
-            });
-        }
-
-        $source.on("click", updateHighlightedLineNodes);
-        $source.on("keyup", updateHighlightedLineNodes);
-        $source.on("input", updateOutput);
-        updateOutput();
-    </script>
+    <script src="static/script.js"></script>
 </html>
