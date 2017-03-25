@@ -13,17 +13,18 @@
 }
 .column {
     height: 100%;
-    width: 50%;
     overflow: auto;
+    flex-grow: 1;
+}
+.column#output {
+    margin-left: 10px;
+    border: 1px solid #333;
+    flex-grow: 2;
 }
 #source {
     height: 100%;
     width: 100%;
     font-family: monospace;
-}
-#output {
-    margin-left: 10px;
-    border: 1px solid #333;
 }
 .node {
     padding: 1px;
@@ -36,7 +37,7 @@
     padding-left: 9px;
 }
 .node > .terminal {
-    color: #666;
+    color: #456;
 }
 .node > .non_terminal {
     font-weight: bold;
@@ -47,6 +48,6 @@
     padding-left: 5px;
 }
 .node > .prefix {
-    color: maroon;
-    padding-left: 15px;
+    color: #666;
+    padding-left: 5px;
 }
