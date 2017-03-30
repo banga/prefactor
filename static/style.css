@@ -14,17 +14,18 @@
 .column {
     height: 100%;
     overflow: auto;
-    flex-grow: 1;
+    flex: 1 0;
 }
 .column#output {
     margin-left: 10px;
     border: 1px solid #333;
-    flex-grow: 2;
+    flex: 2;
 }
 #source {
     height: 100%;
     width: 100%;
     font-family: monospace;
+    font-size: 12px;
 }
 .node {
     padding: 1px;
