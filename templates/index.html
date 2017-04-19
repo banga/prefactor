@@ -25,7 +25,19 @@ def to_json(node):
     return json
                 </textarea>
             </div>
-            <div class="column" id="output">
+            <div class="column" id="tree">
+            </div>
+            <div class="column">
+                <textarea id="visitor" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+class Visitor(NodeVisitor):
+    def visit_if_stmt(self, node):
+        f = node.children[1].children[0]
+        f.value = f.value.upper()
+        self.generic_visit(node)
+                </textarea>
+            </div>
+            <div class="column">
+                <textarea id="output" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>

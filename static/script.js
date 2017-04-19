@@ -1,4 +1,6 @@
 const $source = $("#source");
+const $visitor = $("#visitor");
+const $tree = $("#tree");
 const $output = $("#output");
 
 function renderNode(node) {
@@ -53,25 +55,55 @@ function updateHighlightedLineNodes() {
     highlightLineNodes(lineno);
 }
 
-var lastRequest;
-function updateOutput() {
-    if (lastRequest) {
-        lastRequest.abort();
-    }
-    lastRequest = $.ajax({
-        type: "POST",
-        url: "/parse",
-        data: {source: $source.val()},
-        success: function(data) {
+function apiCall(endpoint) {
+    var request = null;
+    return function(data, success) {
+        if (request) {
+            request.abort();
+        }
+        request = $.ajax({
+            type: "POST",
+            url: endpoint,
+            data: data,
+            success: success,
+            dataType: "json"
+        });
+    };
+}
+
+const parseApi = apiCall("/parse");
+const transformApi = apiCall("/transform");
+
+function updateTree() {
+    updateOutput();
+    parseApi(
+        {source: $source.val()},
+        function(data) {
             console.log(data.tree);
-            $output.html("").append(renderNode(data.tree));
+            $tree.html("").append(renderNode(data.tree));
             updateHighlightedLineNodes();
-        },
-        dataType: "json"
-    });
+        });
+}
+
+function updateOutput() {
+    transformApi(
+        {source: $source.val(), visitor: $visitor.val()},
+        function(data) {
+            console.log(data);
+            if (data.output) {
+                $output.html(data.output);
+                $output.removeClass("error");
+            } else {
+                $output.html(`${data.error.message} on line ` +
+                    `${data.error.lineno}`);
+                $output.addClass("error");
+            }
+        });
 }
 
 $source.on("click", updateHighlightedLineNodes);
 $source.on("keyup", updateHighlightedLineNodes);
-$source.on("input", updateOutput);
+$source.on("input", updateTree);
+$visitor.on("input", updateOutput);
+updateTree();
 updateOutput();

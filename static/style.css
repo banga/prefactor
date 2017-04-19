@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    outline: none;
 }
 .container {
     position: absolute;
@@ -9,23 +10,31 @@
     right: 0;
     display: flex;
     padding: 10px;
-    font-family: monospace;
 }
 .column {
     height: 100%;
     overflow: auto;
     flex: 1 0;
-}
-.column#output {
-    margin-left: 10px;
+    margin: 0 5px;
     border: 1px solid #333;
-    flex: 2;
+    padding: 5px;
 }
-#source {
+.column textarea {
+    border: none;
+    font-size: 14px;
+}
+.column, .column textarea {
+    font-family: monospace;
+}
+#tree {
+    flex: 1 0;
+}
+#source, #visitor, #output {
     height: 100%;
     width: 100%;
-    font-family: monospace;
-    font-size: 12px;
+}
+#output.error {
+    color: red;
 }
 .node {
     padding: 1px;
