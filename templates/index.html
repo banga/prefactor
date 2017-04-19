@@ -4,22 +4,25 @@
         <meta charset="utf-8">
         <title>Parser Playground</title>
         <link rel="stylesheet" href="static/style.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.css"/>
     </head>
     <body>
         <div class="container">
             <div class="column">
-                <textarea id="source" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+                <div id="source"></div>
             </div>
             <div class="column" id="tree">
             </div>
             <div class="column">
-                <textarea id="visitor" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+                <div id="visitor"></div>
             </div>
             <div class="column">
-                <textarea id="output" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+                <div id="output"></div>
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
     </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/python/python.js"></script>
     <script src="static/script.js"></script>
 </html>

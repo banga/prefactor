@@ -2,6 +2,10 @@ const $source = $("#source");
 const $visitor = $("#visitor");
 const $tree = $("#tree");
 const $output = $("#output");
+const $arrow = $("<div>➡</div>").addClass("error-arrow");
+var sourceEditor;
+var visitorEditor;
+var outputEditor;
 
 function renderNode(node) {
     const div = $("<div>")
@@ -50,9 +54,25 @@ function highlightLineNodes(lineno) {
 }
 
 function updateHighlightedLineNodes() {
-    const lineno = $source.val().substr(
-        0, $source.get(0).selectionStart).split("\n").length;
-    highlightLineNodes(lineno);
+    const cursor = sourceEditor.getCursor();
+    highlightLineNodes(cursor.line);
+}
+
+function makeEditor(value, node) {
+    var options = {
+        value: value,
+        mode: {
+            name: "python",
+            version: 3,
+        },
+        lineNumbers: true,
+        indentUnit: 4,
+        viewportMargin: Infinity
+    };
+    return CodeMirror(function(elt) {
+        node.html("");
+        node.append(elt);
+    }, options);
 }
 
 function apiCall(endpoint) {
@@ -76,10 +96,9 @@ const transformApi = apiCall("/transform");
 const storage = localStorage;
 
 function updateTree() {
-    storage.source = $source.val();
+    storage.source = sourceEditor.getValue();
     updateOutput();
-    parseApi(
-        {source: $source.val()},
+    parseApi({source: storage.source},
         function(data) {
             console.log(data.tree);
             $tree.html("").append(renderNode(data.tree));
@@ -88,31 +107,34 @@ function updateTree() {
 }
 
 function updateOutput() {
-    storage.visitor = $visitor.val();
+    const gutterId = "CodeMirror-linenumbers";
+
+    storage.visitor = visitorEditor.getValue();
     transformApi(
-        {source: $source.val(), visitor: $visitor.val()},
+        {source: storage.source, visitor: storage.visitor},
         function(data) {
             console.log(data);
+            visitorEditor.getDoc().clearGutter(gutterId);
             if (data.output) {
-                $output.html(data.output);
-                $output.removeClass("error");
+                outputEditor = makeEditor(data.output, $output);
             } else {
+                visitorEditor.getDoc().setGutterMarker(
+                    data.error.lineno - 1, gutterId, $arrow.get(0));
                 $output.html(`${data.error.message} on line ` +
                     `${data.error.lineno}`);
-                $output.addClass("error");
             }
         });
 }
 
 function initialize() {
-    $source.on("click", updateHighlightedLineNodes);
-    $source.on("keyup", updateHighlightedLineNodes);
-    $source.on("input", updateTree);
-    $visitor.on("input", updateOutput);
+    sourceEditor = makeEditor(storage.source, $source);
+    sourceEditor.on("cursorActivity", updateHighlightedLineNodes);
+    sourceEditor.on("changes", updateTree);
 
-    $source.val(storage.source || "");
-    $visitor.val(storage.visitor || "");
-    updateTree();
+    visitorEditor = makeEditor(storage.visitor, $visitor);
+    visitorEditor.on("changes", updateOutput);
+
+    updateTree(sourceEditor);
 }
 
 initialize();
