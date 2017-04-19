@@ -8,33 +8,12 @@
     <body>
         <div class="container">
             <div class="column">
-                <textarea id="source" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-from lib2to3.pytree import type_repr
-
-
-def to_json(node):
-    json = {
-        "type": type_repr(node.type),
-        "prefix": node.prefix,
-        "lineno": node.get_lineno(),
-    }
-    if hasattr(node, "value"):
-        json["value"] = node.value
-    if node.children:
-        json["children"] = list(map(to_json, node.children))
-    return json
-                </textarea>
+                <textarea id="source" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
             </div>
             <div class="column" id="tree">
             </div>
             <div class="column">
-                <textarea id="visitor" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-class Visitor(NodeVisitor):
-    def visit_if_stmt(self, node):
-        f = node.children[1].children[0]
-        f.value = f.value.upper()
-        self.generic_visit(node)
-                </textarea>
+                <textarea id="visitor" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
             </div>
             <div class="column">
                 <textarea id="output" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>

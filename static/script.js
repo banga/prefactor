@@ -73,8 +73,10 @@ function apiCall(endpoint) {
 
 const parseApi = apiCall("/parse");
 const transformApi = apiCall("/transform");
+const storage = localStorage;
 
 function updateTree() {
+    storage.source = $source.val();
     updateOutput();
     parseApi(
         {source: $source.val()},
@@ -86,6 +88,7 @@ function updateTree() {
 }
 
 function updateOutput() {
+    storage.visitor = $visitor.val();
     transformApi(
         {source: $source.val(), visitor: $visitor.val()},
         function(data) {
@@ -101,9 +104,15 @@ function updateOutput() {
         });
 }
 
-$source.on("click", updateHighlightedLineNodes);
-$source.on("keyup", updateHighlightedLineNodes);
-$source.on("input", updateTree);
-$visitor.on("input", updateOutput);
-updateTree();
-updateOutput();
+function initialize() {
+    $source.on("click", updateHighlightedLineNodes);
+    $source.on("keyup", updateHighlightedLineNodes);
+    $source.on("input", updateTree);
+    $visitor.on("input", updateOutput);
+
+    $source.val(storage.source || "");
+    $visitor.val(storage.visitor || "");
+    updateTree();
+}
+
+initialize();
