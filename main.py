@@ -8,6 +8,7 @@ from parser import parse_any
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--visitor", required=True)
+    parser.add_argument("--verbose", action="store_true")
     parser.add_argument("path", action="append")
     args = parser.parse_args()
 
@@ -19,9 +20,13 @@ def main():
 
     for path in args.path:
         for filename, path, tree in parse_any(path):
-            print("Refactoring", filename)
+            if args.verbose:
+                print("Reading", filename)
             visitor = visitor_cls.Visitor()
             visitor.visit(tree)
+            if not tree.was_changed:
+                continue
+            print("Refactored", filename)
             with open(path, "w") as f:
                 f.write(str(tree))
 
