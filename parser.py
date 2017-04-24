@@ -53,13 +53,13 @@ def parse_dir(dir):
     for dirpath, _, filenames in os.walk(dir):
         for filename in filenames:
             if filename.endswith(".py"):
-                yield (filename, parse_file(
-                    os.path.join(dirpath, filename)))
+                path = os.path.join(dirpath, filename)
+                yield (filename, path, parse_file(path))
 
 
 def parse_any(arg):
     if os.path.isfile(arg):
-        yield (arg, parse_file(arg))
+        yield (arg, arg, parse_file(arg))
     elif os.path.isdir(arg):
         yield from parse_dir(arg)
     else:
@@ -70,4 +70,3 @@ if __name__ == "__main__":
     for arg in sys.argv[1:]:
         for filename, tree in parse_any(arg):
             print(filename, tree is not None)
-
