@@ -2,6 +2,19 @@
     box-sizing: border-box;
     outline: none;
 }
+button {
+    background: white;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background: #def;
+}
+.toolbar {
+    margin: 5px;
+}
 .container {
     position: absolute;
     top: 0;
@@ -9,7 +22,12 @@
     bottom: 0;
     right: 0;
     display: flex;
+    flex-flow: column;
     padding: 10px;
+}
+.columns {
+    display: flex;
+    height: 100%;
 }
 .column {
     height: 100%;
@@ -22,9 +40,6 @@
 }
 .column .CodeMirror {
     height: auto;
-}
-#tree {
-    flex: 1 0;
 }
 #source, #visitor, #output {
     height: 100%;
