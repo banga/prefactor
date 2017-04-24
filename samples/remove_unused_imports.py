@@ -1,6 +1,3 @@
-from util import type_name
-from visitor import NodeVisitor
-
 """
 Removes unused imports in a file
 
@@ -11,6 +8,9 @@ TODO:
 - Handle shadowing variables
 
 """
+from util import type_name
+from visitor import NodeVisitor
+
 
 class Visitor(NodeVisitor):
     def __init__(self):
@@ -31,7 +31,7 @@ class Visitor(NodeVisitor):
             name = name_child.children[2].value
         else:
             raise Exception("Unknown type", type)
-        self.imports[name] = [node, node.next_sibling]
+        self.imports[name] = [node.parent]
 
     def visit_import_from(self, node):
         name_child = node.children[-1]
@@ -52,7 +52,7 @@ class Visitor(NodeVisitor):
         else:
             raise Exception("Unknown type", type)
         if name:
-            self.imports[name] = [node, node.next_sibling]
+            self.imports[name] = [node.parent]
 
     def visit_import_as_names(self, node):
         for child in node.children:
@@ -119,21 +119,24 @@ class Visitor(NodeVisitor):
                 continue
             self.names[name] = node
 
+    def remove_import(self, node):
+        if not node:
+            return
+        prefix = node.prefix
+        if node.next_sibling:
+            node.next_sibling.prefix = prefix + node.next_sibling.prefix
+        node.remove()
+
     def visit_ENDMARKER(self, node):
         for name in self.imports:
             if name in self.names:
                 continue
             for node in self.imports[name]:
-                if node:
-                    node.remove()
+                self.remove_import(node)
         for node in self.multi_imports:
-            last = node.children[-1]
-            if type_name(last) == "RPAR":
-                import_as_node = last.prev_sibling
-            else:
-                import_as_node = last
-            if len(import_as_node.children) == 0:
-                if node.next_sibling and \
-                    type_name(node.next_sibling) == "NEWLINE":
-                    node.next_sibling.remove()
-                node.remove()
+            import_as_node = node.children[-1]
+            if type_name(import_as_node) == "RPAR":
+                import_as_node = import_as_node.prev_sibling
+            if len(import_as_node.children):
+                continue
+            self.remove_import(node.parent)
