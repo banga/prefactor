@@ -15,9 +15,8 @@ def is_multiline(power_node):
     current_line = power_node.get_lineno()
     next_line = current_line
     for node in nodes:
-        if type(node) != "trailer":
-            print("Unknown node", node)
-        elif node.get_lineno() != current_line:
+        assert type(node) == "trailer", node
+        if node.get_lineno() != current_line:
             return True
 
     return False
