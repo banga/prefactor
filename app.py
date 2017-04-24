@@ -7,7 +7,7 @@ from flask import (
     request
 )
 from parser import parse_string
-from util import to_json
+from util import to_json, type_name
 from visitor import NodeVisitor
 
 app = Flask(__name__)
@@ -34,7 +34,10 @@ def transform():
     node = parse_string(source)
 
     visitor_source = request.form.get('visitor', "")
-    globals_ = {"NodeVisitor": NodeVisitor}
+    globals_ = {
+        "NodeVisitor": NodeVisitor,
+        "type_name": type_name
+    }
     output = None
     error = None
     try:
