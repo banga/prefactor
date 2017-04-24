@@ -2,7 +2,6 @@
 Removes unused imports in a file
 
 TODO:
-- Preserve statement prefixes (usually comments)
 - Add tests
 - Handle/ignore conditional global imports
 - Handle shadowing variables
