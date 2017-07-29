@@ -21,7 +21,7 @@ Now you can start writing your visitor in the third box. The app expects a `Visi
 
 Try pasting this:
 
-```
+```python
 from visitor import NodeVisitor
 
 class Visitor(NodeVisitor):
