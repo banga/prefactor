@@ -1,6 +1,6 @@
 import argparse
 import importlib
-import samples
+import visitors
 import sys
 from parser import parse_any
 
@@ -13,9 +13,10 @@ def main():
     args = parser.parse_args()
 
     try:
-        visitor_cls = importlib.import_module("samples.{}".format(args.visitor))
+        visitor_cls = importlib.import_module(
+            "visitors.{}".format(args.visitor))
     except ModuleNotFoundError:
-        print("Unknown refactoring:", args.visitor)
+        print("Unknown visitor:", args.visitor)
         sys.exit(1)
 
     for path in args.path:
