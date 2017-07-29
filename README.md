@@ -1,5 +1,5 @@
 # prefactor
-This is a tool that allows developers to write AST-based refactorings for large Python codebases. It uses `lib2to3` to convert source code to an AST, run a visitor over it that modifies the tree, and convert the tree back into source code.
+This is a tool that for writing AST-based refactorings for large Python codebases. It uses `lib2to3` to convert source code to an AST, run a visitor over it that modifies the tree, and convert the tree back into source code.
 
 ## Usage
 
